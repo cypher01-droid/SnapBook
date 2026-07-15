@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
 import api from '../../utils/api';
 import toast from 'react-hot-toast';
 import { FiArrowLeft, FiSend } from 'react-icons/fi';
+import React, { useState, useEffect, useCallback } from 'react';
 
 const BackIcon = FiArrowLeft as React.FC<{ className?: string; onClick?: () => void }>;
 const SendIcon = FiSend as React.FC<{ className?: string }>;
@@ -20,22 +20,22 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ conversation, onBack }) => {
 
   const otherUser = conversation.participants.find((p: any) => p._id !== currentUserId);
 
-  const fetchMessages = async () => {
-    try {
-      const res = await api.get(`/chat/${conversation._id}/messages`);
-      setMessages(res.data);
-    } catch {
-      toast.error('Failed to load messages');
-    } finally {
-      setLoading(false);
-    }
-  };
+  const fetchMessages = useCallback(async () => {
+  try {
+    const res = await api.get(`/chat/${conversation._id}/messages`);
+    setMessages(res.data);
+  } catch {
+    toast.error('Failed to load messages');
+  } finally {
+    setLoading(false);
+  }
+}, [conversation._id]);
 
-  useEffect(() => {
-    fetchMessages();
-    const interval = setInterval(fetchMessages, 3000);
-    return () => clearInterval(interval);
-  }, [conversation._id]);
+useEffect(() => {
+  fetchMessages();
+  const interval = setInterval(fetchMessages, 3000);
+  return () => clearInterval(interval);
+}, [fetchMessages]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
