@@ -1,8 +1,7 @@
 import api from '../../utils/api';
 import toast from 'react-hot-toast';
 import { FiArrowLeft, FiSend } from 'react-icons/fi';
-import React, { useState, useEffect, useCallback } from 'react';
-
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 const BackIcon = FiArrowLeft as React.FC<{ className?: string; onClick?: () => void }>;
 const SendIcon = FiSend as React.FC<{ className?: string }>;
 
@@ -17,6 +16,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ conversation, onBack }) => {
   const [loading, setLoading] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const currentUserId = localStorage.getItem('userId') || '';
+
 
   const otherUser = conversation.participants.find((p: any) => p._id !== currentUserId);
 
